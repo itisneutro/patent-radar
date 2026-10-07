@@ -1,0 +1,26 @@
+# Python: байт-код и кэш pytest
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Виртуальные окружения Python
+.venv/
+venv/
+
+# Node.js и сборка фронтенда
+node_modules/
+dist/
+
+# Секреты и локальные настройки.
+# .env не коммитится; образец без секретов — .env.example (коммитится).
+# *.local — локальные переопределения, например frontend/.env.local.
+# frontend/.env.api секретов не содержит и коммитится.
+.env
+*.local
+
+# marimo: служебная папка тетрадок (кэш сессий)
+__marimo__/
+
+# Служебные файлы macOS и Windows
+.DS_Store
+Thumbs.db
