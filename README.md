@@ -22,9 +22,9 @@
 
 | Участник | Роль | Зона ответственности |
 |---|---|---|
-| Бобур | BM25 и RAG | `data/`, `app/search/`, `benchmark/`, `spec/tech/rag.md`, `app/llm/prompts.py` |
-| Коля | Интеграция (бэкенд) | `app/api/`, `app/llm/client.py`, `tests/`, `spec/tech/architecture.md`, общие файлы в корне (`README.md`, `AGENTS.md`, `CLAUDE.md`, `CHANGE_HISTORY.md`, `.gitignore`, `requirements.txt`, `.env.example`, `pytest.ini`), `app/__init__.py`, `app/llm/__init__.py` |
-| Ника | Продукт и интерфейс | `spec/product/`, `frontend/` |
+| Абидов Бобур Ровшанович | BM25 и RAG | `data/`, `app/search/`, `benchmark/`, `spec/tech/rag.md`, `app/llm/prompts.py` |
+| Васильев Николай Денисович | Интеграция (бэкенд) | `app/api/`, `app/llm/client.py`, `tests/`, `spec/tech/architecture.md`, общие файлы в корне (`README.md`, `AGENTS.md`, `CLAUDE.md`, `CHANGE_HISTORY.md`, `.gitignore`, `requirements.txt`, `.env.example`, `pytest.ini`), `app/__init__.py`, `app/llm/__init__.py` |
+| Лазарева Вероника Игоревна | Продукт и интерфейс | `spec/product/`, `frontend/` |
 
 Изменения в чужой зоне — только по согласованию с владельцем (см. [AGENTS.md](AGENTS.md)).
 
