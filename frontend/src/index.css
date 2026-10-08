@@ -1,0 +1,366 @@
+@import "tailwindcss";
+
+/*
+ * Дизайн «радар». Тёмная тема по умолчанию: глубокий тёмно-синий фон и бирюзовый акцент,
+ * как на экране радара. Светлая тема — по переключателю в шапке (например, для проектора).
+ * Цвета — переменные: тему меняет атрибут data-theme на <html> (см. src/lib/theme.ts).
+ * Контраст по WCAG AA проверен расчётом для обеих тем: текст ≥ 4.5:1 к фону и подложкам,
+ * рамки полей, фокус и полоса релевантности ≥ 3:1.
+ */
+@theme inline {
+  --font-display: "Unbounded Variable", "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Только цвета проекта: стандартная палитра Tailwind отключена. */
+  --color-*: initial;
+  --color-bg: var(--c-bg); /* фон страницы */
+  --color-surface: var(--c-surface); /* карточки и панели */
+  --color-raised: var(--c-raised); /* поля ввода, чипы, скелетоны */
+  --color-line: var(--c-line); /* тонкие разделители */
+  --color-line-strong: var(--c-line-strong); /* рамки полей ввода, ≥ 3:1 */
+  --color-ink: var(--c-ink); /* основной текст */
+  --color-ink-soft: var(--c-ink-soft); /* второстепенный текст */
+  --color-muted: var(--c-muted); /* подписи, коды INID */
+  --color-accent: var(--c-accent); /* ссылки, кнопка, фокус, радар */
+  --color-accent-strong: var(--c-accent-strong); /* наведение на акцентные элементы */
+  --color-accent-ink: var(--c-accent-ink); /* текст на акцентной кнопке */
+  --color-signal: var(--c-signal); /* заполнение полосы релевантности (метка данных) */
+  --color-danger: var(--c-danger); /* ошибки */
+  --color-warn: var(--c-warn); /* демо-данные, номер вне выдачи */
+}
+
+/* Тёмная тема (по умолчанию). */
+:root {
+  color-scheme: dark;
+  --c-bg: #050c1a;
+  --c-surface: #0a1730;
+  --c-raised: #0f2140;
+  --c-line: #1b3152;
+  --c-line-strong: #56739b;
+  --c-ink: #e6f0ff;
+  --c-ink-soft: #b3c3db;
+  --c-muted: #8fa4c2;
+  --c-accent: #33e6c1;
+  --c-accent-strong: #7af0d8;
+  --c-accent-ink: #03121e;
+  --c-signal: #17a98c;
+  --c-danger: #ff7b8b;
+  --c-warn: #f8c25c;
+  /* Свечение акцента и линии радара: декоративные, к контрасту текста не относятся. */
+  --c-glow: rgb(51 230 193 / 0.16);
+  --c-grid: rgb(51 230 193 / 0.24);
+  --c-haze: rgb(64 120 255 / 0.1);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --c-bg: #eef3f8;
+  --c-surface: #ffffff;
+  --c-raised: #f3f7fb;
+  --c-line: #d5dfeb;
+  --c-line-strong: #7a8ca3;
+  --c-ink: #0b192d;
+  --c-ink-soft: #33465e;
+  --c-muted: #536781;
+  --c-accent: #0a7568;
+  --c-accent-strong: #075a50;
+  --c-accent-ink: #ffffff;
+  --c-signal: #00897a;
+  --c-danger: #b42318;
+  --c-warn: #875000;
+  --c-glow: rgb(10 117 104 / 0.12);
+  --c-grid: rgb(10 117 104 / 0.3);
+  --c-haze: rgb(64 120 255 / 0.06);
+}
+
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+    -webkit-text-size-adjust: 100%;
+    background-color: var(--c-bg);
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--c-bg);
+    background-image:
+      radial-gradient(56rem 32rem at 8% -6%, var(--c-glow), transparent 70%),
+      radial-gradient(44rem 30rem at 100% 0%, var(--c-haze), transparent 70%);
+    background-repeat: no-repeat;
+    color: var(--c-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--c-accent) 35%, transparent);
+    color: var(--c-ink);
+  }
+
+  ::placeholder {
+    color: var(--c-muted);
+    opacity: 1;
+  }
+}
+
+/* Номера, коды МПК, годы, оценки и счётчики: моноширинный шрифт, цифры одинаковой ширины. */
+@utility num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Подпись прописными с разрядкой: подписи полей, коды INID, заголовки блоков. */
+@utility caps {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+@layer components {
+  /* Карточки и панели: подложка, тонкая рамка, крупное скругление. */
+  .panel {
+    border: 1px solid var(--c-line);
+    border-radius: 1.25rem;
+    background-color: color-mix(in oklab, var(--c-surface) 88%, transparent);
+  }
+
+  /* Поля ввода (год, МПК): рамка ≥ 3:1, в фокусе — акцентная рамка и свечение, при ошибке — красная. */
+  .field {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 0.75rem;
+    background-color: var(--c-raised);
+    color: var(--c-ink);
+    padding: 0.5rem 0.75rem;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .field:hover {
+    border-color: var(--c-ink-soft);
+  }
+
+  .field:focus {
+    border-color: var(--c-accent);
+    box-shadow: 0 0 0 3px var(--c-glow);
+    outline: 2px solid var(--c-accent);
+    outline-offset: 1px;
+  }
+
+  .field[aria-invalid="true"] {
+    border-color: var(--c-danger);
+  }
+
+  .field[aria-invalid="true"]:focus {
+    outline-color: var(--c-danger);
+  }
+
+  /* Метка [ID] в пояснении: ссылка на «Карточку патента». */
+  .ref-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.8125em;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    padding: 0.0625rem 0.4375rem;
+    border-radius: 0.375rem;
+    color: var(--c-accent);
+    background-color: color-mix(in oklab, var(--c-accent) 14%, var(--c-surface));
+    text-decoration: none;
+    vertical-align: 0.0625em;
+  }
+
+  a.ref-tag:hover {
+    color: var(--c-accent-strong);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .ref-tag-current {
+    color: var(--c-ink);
+    background-color: var(--c-raised);
+  }
+
+  /* Метка с номером, которого нет в выдаче: не ссылка, выделена как предупреждение. */
+  .ref-tag-unknown {
+    color: var(--c-warn);
+    background-color: color-mix(in oklab, var(--c-warn) 12%, var(--c-surface));
+    text-decoration: underline dashed var(--c-warn);
+    text-underline-offset: 3px;
+    cursor: help;
+  }
+
+  /* Ссылка-заголовок карточки выдачи растянута на всю карточку: щелчок в любом месте открывает её. */
+  .card-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 1.25rem;
+  }
+
+  .card-link:focus-visible {
+    outline: none;
+  }
+
+  .card-link:focus-visible::after {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+  }
+
+  /* Скелетон загрузки: мягкий перелив по подложке. */
+  .skeleton {
+    border-radius: 0.5rem;
+    background-color: var(--c-raised);
+    background-image: linear-gradient(
+      100deg,
+      transparent 20%,
+      color-mix(in oklab, var(--c-ink) 7%, transparent) 50%,
+      transparent 80%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+
+  /* Радар: развёртка вращается, «цели» вспыхивают, когда луч проходит над ними. */
+  .radar-sweep {
+    animation: radar-spin var(--radar-period, 4s) linear infinite;
+  }
+
+  .radar-blip {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: radar-blip var(--radar-period, 4s) linear infinite;
+    animation-delay: var(--blip-delay, 0s);
+  }
+
+  .radar-ping {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: radar-ping var(--radar-period, 4s) ease-out infinite;
+    animation-delay: var(--blip-delay, 0s);
+  }
+
+  /* Смена экрана: содержимое плавно появляется. */
+  .screen-enter {
+    animation: screen-in 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  /* Карточки выдачи появляются по очереди (задержка — переменная --delay). */
+  .rise-in {
+    animation: rise-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: var(--delay, 0ms);
+  }
+}
+
+@keyframes radar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes radar-blip {
+  0% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+  8% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  60% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+}
+
+@keyframes radar-ping {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  30% {
+    opacity: 0;
+    transform: scale(4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(4);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+@keyframes screen-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Пользователь просит меньше движения: развёртка стоит, цели горят ровно, переходов нет. */
+@media (prefers-reduced-motion: reduce) {
+  .radar-sweep,
+  .radar-blip,
+  .radar-ping,
+  .skeleton,
+  .screen-enter,
+  .rise-in {
+    animation: none;
+  }
+
+  .radar-sweep {
+    transform: rotate(var(--radar-rest, 120deg));
+  }
+
+  .radar-blip {
+    opacity: 0.9;
+  }
+
+  .radar-ping {
+    display: none;
+  }
+
+  *,
+  ::before,
+  ::after {
+    transition-duration: 0.01ms !important;
+  }
+}

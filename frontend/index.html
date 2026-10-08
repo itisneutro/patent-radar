@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#050c1a" />
+    <title>Патентный радар</title>
+    <script>
+      // Тема до первой отрисовки, чтобы не мигал светлый экран. По умолчанию — тёмная (src/lib/theme.ts).
+      try {
+        if (localStorage.getItem('patent-radar-theme') === 'light') {
+          document.documentElement.dataset.theme = 'light'
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#eef3f8')
+        }
+      } catch (error) {
+        // Хранилище недоступно — остаётся тёмная тема.
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
