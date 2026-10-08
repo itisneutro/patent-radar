@@ -74,5 +74,113 @@ patent-radar/
 <!-- run:start -->
 ## Запуск
 
-Инструкция по запуску появится на шаге `02_code` (Коля): бэкенд, тесты, фронтенд-прототип и тетрадка benchmark.
+На КТ1 бэкенд отвечает заглушкой на демонстрационных данных: поиск BM25 и языковая модель пока не работают. Команды выполняются из корня репозитория, если не сказано другое.
+
+### Требования
+
+- Python 3.11 или новее: `python3 --version` (в Windows — `py --version`).
+- Node.js 20.19+ или 22.12+ для фронтенда: `node --version`.
+- Git.
+- Ollama на КТ1 не нужна: `/search` языковую модель не вызывает.
+
+### Клонирование
+
+```bash
+git clone https://github.com/itisneutro/patent-radar.git
+cd patent-radar
+```
+
+### Бэкенд
+
+Сначала проверьте версию: `python3 --version`. Если она ниже 3.11 (системный `python3` в macOS — 3.9, в Ubuntu 22.04 — 3.10), установите Python 3.12: в macOS — с https://www.python.org или командой `brew install python@3.12`, в Ubuntu 22.04 — `sudo add-apt-repository ppa:deadsnakes/ppa`, затем `sudo apt install python3.12 python3.12-venv`. Тогда в первой команде ниже пишите `python3.12` вместо `python3`. В Debian и Ubuntu для `venv` нужен пакет `python3-venv` (для Python 3.12 — `python3.12-venv`).
+
+macOS и Linux:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+uvicorn app.api.main:app --reload
+```
+
+Если `.venv` уже было создано старой версией Python, пересоздайте его: `python3.12 -m venv --clear .venv`.
+
+Windows (PowerShell):
+
+```powershell
+py -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+Copy-Item .env.example .env
+uvicorn app.api.main:app --reload
+```
+
+Если PowerShell не даёт выполнить `Activate.ps1`, один раз выполните `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` или работайте в `cmd`: `.venv\Scripts\activate.bat`, затем `copy .env.example .env`.
+
+Сервер слушает http://127.0.0.1:8000 и с `--reload` перезапускается при изменении кода; остановка — Ctrl+C. В каждом новом терминале окружение активируют заново: `source .venv/bin/activate` (Windows: `.venv\Scripts\Activate.ps1`).
+
+### Проверка
+
+- http://127.0.0.1:8000/health — ответ `{"status":"ok","version":"0.1.0","mode":"stub"}`.
+- http://127.0.0.1:8000/docs — Swagger: `POST /search` → Try it out → в списке Examples выбрать пример («Основной демо-запрос: 3 результата», «Фильтр по МПК G01N: DEMO-001, DEMO-003», «Ничего не найдено: пустая выдача», «Слишком короткий запрос: ответ 422» и др.) → Execute.
+- Запрос из терминала (macOS, Linux):
+
+```bash
+curl -s -X POST http://127.0.0.1:8000/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Хочу, чтобы грядки на даче поливались сами: датчик в земле замечает, что почва пересохла, и включает воду, а если обещают дождь, полив не включается.", "top_k": 10}'
+```
+
+В ответе три демо-патента в порядке DEMO-002, DEMO-001, DEMO-003 и `answer`, который начинается со слов «Демонстрационные данные». Запрос `{"query": "Умный полив"}` вернёт 422: в нём меньше трёх слов. В Windows кириллица в командной строке может уйти на сервер в другой кодировке, поэтому там удобнее проверять через Swagger.
+
+### Тесты
+
+```bash
+pytest
+```
+
+Тестам не нужны сеть, Ollama и запущенный сервер: API вызывается внутри процесса (TestClient), клиент LLM проверяется на `httpx.MockTransport`. Сверки с `frontend/src/mock/search.json` и `data/sample/patents.jsonl` пропускаются (skipped), если этих файлов нет.
+
+### Фронтенд
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Откройте http://localhost:5173. В этом режиме интерфейс работает на моке `frontend/src/mock/search.json`, бэкенд не нужен.
+
+Вместе с бэкендом: в одном терминале запустите `uvicorn app.api.main:app --reload` (из корня репозитория), в другом:
+
+```bash
+cd frontend
+npm run dev:api
+```
+
+Интерфейс отправляет запросы на `/api/search`, а dev-сервер Vite передаёт `/api/*` бэкенду на http://127.0.0.1:8000 (префикс `/api` срезается). Если бэкенд не запущен, интерфейс показывает «Сервис недоступен».
+
+### Тетрадка benchmark
+
+```bash
+python benchmark/experiments.py
+marimo edit benchmark/experiments.py
+```
+
+Первая команда выполняет тетрадку как обычный скрипт и печатает сводку, вторая открывает её в браузере (остановка — Ctrl+C). На КТ1 в тетрадке проверка формата benchmark и план экспериментов; метрики Recall@5, Recall@10 и MRR появятся на КТ2 вместе с BM25 и benchmark.
+
+### LLM (понадобится на КТ2)
+
+1. Установите Ollama: https://ollama.com/download.
+2. Скачайте модель: `ollama pull qwen2.5:7b` (около 4,7 ГБ). Для слабого ноутбука — `ollama pull qwen2.5:3b` и `LLM_MODEL=qwen2.5:3b` в `.env`.
+3. В `.env` оставьте `LLM_PROVIDER=ollama`. Проверка, что Ollama отвечает: `curl http://localhost:11434/v1/models`.
+4. Без модели: `LLM_PROVIDER=stub`. Другие локальные серверы (LM Studio, llama.cpp server) подключаются через `LLM_PROVIDER=openai_compatible`; переменные описаны в `.env.example` и `spec/tech/architecture.md`.
+
+### Если что-то не работает
+
+- `ModuleNotFoundError: No module named 'app'` — uvicorn или pytest запущены не из корня репозитория.
+- `command not found: uvicorn` или `pytest` — не активировано окружение `.venv`.
+- `ERROR: Could not find a version that satisfies the requirement …` при `pip install` — окружение создано Python версии ниже 3.11: пересоздайте его (см. «Бэкенд»).
+- `Address already in use` — порт 8000 занят другим процессом (например, вторым uvicorn). Остановите его: фронтенд в режиме `api` обращается именно к порту 8000.
 <!-- run:end -->

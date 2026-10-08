@@ -1,0 +1,23 @@
+# Зависимости бэкенда, поиска, тетрадок и тестов. Нужен Python 3.11+.
+# Нижняя граница — версия, на которой проект проверен.
+# Установка: pip install -r requirements.txt
+
+# API
+fastapi>=0.142.2
+pydantic>=2.13.5
+uvicorn[standard]>=0.54.0
+python-dotenv>=1.2.4
+
+# HTTP-клиент для LLM (OpenAI-совместимый API: Ollama, LM Studio и др.)
+httpx>=0.28.1
+
+# Лемматизация русского текста для BM25 (app/search, КТ2)
+pymorphy3>=2.0.6
+
+# Тетрадки экспериментов (benchmark/experiments.py)
+marimo>=0.25.1
+
+# Тесты. httpx2 нужен TestClient из FastAPI/Starlette: без него Starlette 1.7+
+# предупреждает, что TestClient на httpx устарел.
+pytest>=9.1.1
+httpx2>=2.13.1
