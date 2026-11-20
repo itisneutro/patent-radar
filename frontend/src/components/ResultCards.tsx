@@ -13,6 +13,8 @@ interface ResultCardsProps {
 /**
  * Выдача — карточки патентов в порядке API (сортировки нет), «№» — с 1. Название — ссылка
  * на «Карточку патента», растянутая на всю карточку: щелчок в любом месте открывает её.
+ * Длинное название (в корпусе — до 329 знаков) обрезается до 4 строк; целиком оно — в подсказке
+ * и в «Карточке патента».
  * Номер и коды МПК — моноширинным шрифтом; полоса релевантности показывает оценку BM25
  * относительно лучшей в этой выдаче (оценки сравнимы только внутри одной выдачи).
  */
@@ -30,7 +32,7 @@ export function ResultCards({ results, labelledBy }: ResultCardsProps) {
               {isDemoId(patent.id) && <DemoBadge />}
             </div>
 
-            <h3 className="mt-2.5 text-[17px] font-bold leading-snug">
+            <h3 title={patent.title} className="mt-2.5 line-clamp-4 text-[17px] font-bold leading-snug">
               <a href={patentHash(patent.id)} className="card-link text-ink transition-colors group-hover:text-accent">
                 {patent.title}
               </a>

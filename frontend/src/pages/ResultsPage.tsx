@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import type { SearchRequest } from '../api/types'
 import { AnswerText, LlmPanel } from '../components/AnswerText'
 import { DemoBanner } from '../components/DemoBanner'
@@ -130,13 +131,40 @@ export function ResultsPage({ request, search, onEdit, onResetFilters, onRetry }
   )
 }
 
-/** Состояние «Загрузка»: маленький радар, текст и скелетоны в раскладке выдачи. */
+/** Через сколько секунд загрузки показать подсказку о времени ответа языковой модели. */
+const SLOW_HINT_AFTER_SECONDS = 2
+
+/** Секунды с момента показа компонента; обновляются раз в секунду. */
+function useElapsedSeconds(): number {
+  const [elapsed, setElapsed] = useState(0)
+  useEffect(() => {
+    const started = Date.now()
+    const timer = window.setInterval(() => setElapsed(Math.floor((Date.now() - started) / 1000)), 1000)
+    return () => window.clearInterval(timer)
+  }, [])
+  return elapsed
+}
+
+/**
+ * Состояние «Загрузка»: маленький радар, текст и скелетоны в раскладке выдачи. Поиск BM25 занимает
+ * доли секунды, а пояснение языковой модели — десятки секунд (spec/tech/architecture.md, раздел 6.1),
+ * поэтому через 2 с под текстом появляется подсказка со счётчиком времени.
+ */
 function LoadingSkeleton() {
+  const elapsed = useElapsedSeconds()
   return (
     <>
       <div className="mt-8 flex items-center gap-3.5">
-        <RadarScope compact blips={[]} period={1.6} className="size-10" />
-        <p className="text-ink-soft">Ищем похожие патенты…</p>
+        <RadarScope compact blips={[]} period={1.6} className="size-10 shrink-0" />
+        <div>
+          <p className="text-ink-soft">Ищем похожие патенты…</p>
+          {elapsed >= SLOW_HINT_AFTER_SECONDS && (
+            <p className="mt-1 text-sm leading-5 text-muted">
+              Языковая модель пишет пояснение к первым пяти патентам — обычно это до полуминуты, на медленном компьютере
+              дольше. Прошло: <span className="num">{elapsed}</span> с
+            </p>
+          )}
+        </div>
       </div>
       <div aria-hidden="true" className={RESULTS_GRID}>
         <div className="panel p-5 sm:p-7">

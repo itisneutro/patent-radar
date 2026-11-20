@@ -3,6 +3,7 @@ import type { SearchRequest } from '../api/types'
 import { ArrowRight } from '../components/Icons'
 import { RadarScope } from '../components/RadarScope'
 import { EXAMPLE_QUERIES } from '../lib/examples'
+import { CORPUS_SIZE, CORPUS_TOPICS } from '../lib/topics'
 import { buttonPrimary } from '../lib/ui'
 import {
   charLength,
@@ -144,6 +145,27 @@ export function SearchPage({ form, onChange, onSubmit }: SearchPageProps) {
                     {example.text}
                   </span>
                 </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section aria-labelledby="topics-title">
+          <h2 id="topics-title" className="caps">
+            Темы корпуса
+          </h2>
+          <p className="mt-2 max-w-[62ch] text-sm leading-6 text-ink-soft">
+            Радар ищет среди <span className="num">{CORPUS_SIZE}</span> рефератов патентов РФ на изобретения — по{' '}
+            <span className="num">{CORPUS_SIZE / CORPUS_TOPICS.length}</span> на каждую из тем ниже. Идея на другую тему
+            найдёт патенты только по совпадению слов, а пустая выдача не значит, что аналогов нет вообще.
+          </p>
+          <ul className="mt-3 grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+            {CORPUS_TOPICS.map((topic) => (
+              <li key={topic.code} className="flex items-baseline gap-2.5 text-sm leading-5">
+                <span className="num shrink-0 rounded-md border border-line bg-raised px-2 py-0.5 text-[13px] leading-5 text-ink-soft">
+                  {topic.code}
+                </span>
+                <span className="text-ink">{topic.name}</span>
               </li>
             ))}
           </ul>

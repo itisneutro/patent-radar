@@ -1,6 +1,7 @@
 /**
- * Мок POST /search для режима mock (КТ1). Ведёт себя так же, как заглушка бэкенда
- * app/api/stub.py (spec/tech/architecture.md, раздел о заглушке КТ1):
+ * Мок POST /search для режима mock: интерфейс без бэкенда, на демо-данных. Правила —
+ * spec/tech/architecture.md, раздел 9 (на КТ1 по ним же отвечала заглушка бэкенда; с КТ2 бэкенд
+ * ищет по корпусу BM25, а мок остаётся только для режима mock):
  * 1. Запрос проверяется по правилам контракта; если API ответил бы 422 — SearchError('rejected').
  * 2. Демо-тема: если запрос в нижнем регистре, с заменой «ё» на «е», содержит хотя бы одну
  *    основу из DEMO_TOPIC_STEMS, берутся три демо-патента из src/mock/search.json, иначе выдача пуста.
@@ -17,7 +18,7 @@ import demo from '../mock/search.json'
 import { SearchError } from './errors'
 import type { PatentResult, SearchRequest, SearchResponse } from './types'
 
-/** Эталонный ответ: совпадает с ответом заглушки бэкенда на основной демо-запрос. */
+/** Эталонный ответ на основной демо-запрос: пример ответа из spec/tech/architecture.md, раздел 4.6. */
 const DEMO_RESPONSE: SearchResponse = demo
 
 /** Основы слов демо-темы «полив и влажность почвы»; ищутся подстрокой в запросе. */
