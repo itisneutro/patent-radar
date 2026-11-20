@@ -21,6 +21,7 @@ from app.llm.client import (
     STUB_REPLY,
     LLMClient,
     LLMError,
+    LLMReply,
     LLMSettings,
     is_loopback_url,
 )
@@ -46,7 +47,7 @@ LM_STUDIO = LLMSettings(
     temperature=0.5,
     timeout_seconds=30,
 )
-MODEL_NOT_FOUND = {"error": {"message": 'model "qwen2.5:7b" not found'}}
+MODEL_NOT_FOUND = {"error": {"message": 'model "patent-radar:7b" not found'}}
 
 Handler = Callable[[httpx.Request], httpx.Response]
 
@@ -117,10 +118,10 @@ def test_defaults_without_environment() -> None:
     assert settings == LLMSettings()
     assert settings.provider == "ollama"
     assert settings.base_url == OLLAMA_BASE_URL == "http://localhost:11434/v1"
-    assert settings.model == DEFAULT_MODEL == "qwen2.5:7b"
+    assert settings.model == DEFAULT_MODEL == "patent-radar:7b"
     assert settings.api_key == OLLAMA_API_KEY == "ollama"
     assert settings.temperature == 0.2
-    assert settings.timeout_seconds == 60
+    assert settings.timeout_seconds == 120
 
 
 def test_env_example_matches_defaults() -> None:
@@ -276,11 +277,50 @@ def test_chat_request_format_for_ollama() -> None:
     assert request.headers["Authorization"] == "Bearer ollama"
     assert request.headers["Content-Type"] == "application/json"
     assert json.loads(request.content) == {
-        "model": "qwen2.5:7b",
+        "model": "patent-radar:7b",
         "messages": MESSAGES,
         "temperature": 0.2,
         "stream": False,
     }
+
+
+def test_complete_returns_usage_and_finish_reason() -> None:
+    """complete() возвращает текст, usage и finish_reason: по ним API проверяет обрезку промпта."""
+    body = completion("  [DEMO-001] Аналог. Похож принцип работы.\n")
+    body["choices"][0]["finish_reason"] = "length"
+    body["usage"] = {"prompt_tokens": 2863, "completion_tokens": 374, "total_tokens": 3237}
+
+    reply = mock_client(lambda _request: httpx.Response(200, json=body)).complete(MESSAGES)
+
+    assert reply == LLMReply(
+        text="[DEMO-001] Аналог. Похож принцип работы.",
+        prompt_tokens=2863,
+        completion_tokens=374,
+        finish_reason="length",
+    )
+
+
+@pytest.mark.parametrize(
+    "usage",
+    [
+        pytest.param(None, id="no-usage"),
+        pytest.param({"prompt_tokens": "много"}, id="not-a-number"),
+        pytest.param({"prompt_tokens": -1}, id="negative"),
+        pytest.param({"prompt_tokens": True}, id="bool"),
+    ],
+)
+def test_complete_without_valid_usage(usage: Any) -> None:
+    """Сервер не прислал usage или прислал не число: токены неизвестны, текст ответа есть."""
+    body = completion("Ответ.")
+    if usage is not None:
+        body["usage"] = usage
+    reply = mock_client(lambda _request: httpx.Response(200, json=body)).complete(MESSAGES)
+    assert reply == LLMReply(text="Ответ.", finish_reason="stop")
+
+
+def test_stub_complete_works_without_network() -> None:
+    reply = LLMClient(LLMSettings(provider="stub")).complete(MESSAGES)
+    assert reply == LLMReply(STUB_REPLY, finish_reason="stop")
 
 
 def test_chat_uses_openai_compatible_settings() -> None:
@@ -342,7 +382,7 @@ def test_is_available_requests_models() -> None:
 
     def handler(request: httpx.Request) -> httpx.Response:
         requests.append(request)
-        return httpx.Response(200, json={"object": "list", "data": [{"id": "qwen2.5:7b"}]})
+        return httpx.Response(200, json={"object": "list", "data": [{"id": "patent-radar:7b"}]})
 
     assert mock_client(handler).is_available()
     [request] = requests

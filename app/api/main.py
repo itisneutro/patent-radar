@@ -6,71 +6,99 @@
 
 Документация Swagger: http://127.0.0.1:8000/docs.
 
-На КТ1 POST /search отвечает заглушкой (app/api/stub.py) на демонстрационных
-данных: BM25 и языковая модель не вызываются. На КТ2 при старте приложения будет
-строиться индекс BM25 из data/corpus/patents.jsonl, а пояснение будет писать LLM
-через app/llm/client.py; формат ответа при этом не меняется.
+При старте приложение читает корпус data/corpus/patents.jsonl и строит индекс BM25
+(app/api/pipeline.py), а клиент языковой модели создаёт по переменным LLM_* из .env:
+ошибка в корпусе или в настройках LLM видна сразу, а не на первом запросе.
+POST /search ищет по корпусу и поясняет первые 5 результатов через LLM
+(spec/tech/architecture.md, разделы 3 и 8).
 """
 
 import math
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from typing import Annotated, Any, Final
 
 from dotenv import load_dotenv
-from fastapi import Body, FastAPI, Request
+from fastapi import Body, Depends, FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.models import Example
 from fastapi.responses import JSONResponse
 
 from app import __version__
+from app.api.pipeline import SearchPipeline
 from app.api.schemas import HealthResponse, SearchMode, SearchRequest, SearchResponse
-from app.api.stub import EXAMPLE_QUERIES, search_stub
 
 # Переменные LLM_* из файла .env в корне репозитория; уже заданные переменные
-# окружения не перезаписываются. На КТ1 их никто не читает, они нужны с КТ2.
+# окружения не перезаписываются.
 load_dotenv()
 
-#: Режим поиска, который сообщает /health: "stub" на КТ1, "bm25" после КТ2.
-SEARCH_MODE: Final[SearchMode] = "stub"
+#: Режим поиска, который сообщает /health: с КТ2 — поиск BM25 по корпусу.
+SEARCH_MODE: Final[SearchMode] = "bm25"
+
+#: Основной пример: идея своими словами на тему корпуса «полив и влажность почвы» (A01G).
+MAIN_QUERY: Final = (
+    "Хочу, чтобы грядки на даче поливались сами: датчик в земле замечает, что почва "
+    "пересохла, и включает воду, а если обещают дождь, полив не включается."
+)
 
 #: Готовые примеры тела POST /search для Swagger (/docs → Try it out).
 SEARCH_EXAMPLES: Final[dict[str, Example]] = {
     "main": {
-        "summary": "Основной демо-запрос: 3 результата",
-        "value": {"query": EXAMPLE_QUERIES["main"], "top_k": 10},
+        "summary": "Автополив по влажности почвы",
+        "value": {"query": MAIN_QUERY, "top_k": 10},
     },
-    "sensor": {
-        "summary": "Датчик влажности: 3 результата",
-        "value": {"query": EXAMPLE_QUERIES["sensor"]},
+    "bicycle": {
+        "summary": "Складной велосипед",
+        "value": {
+            "query": (
+                "Велосипед, рама которого складывается пополам на шарнире, чтобы его "
+                "можно было занести в автобус или положить в багажник."
+            ),
+        },
     },
     "ipc": {
-        "summary": "Фильтр по МПК G01N: DEMO-001, DEMO-003",
-        "value": {"query": EXAMPLE_QUERIES["main"], "ipc": "G01N"},
+        "summary": "Фильтр по МПК A01G",
+        "value": {"query": MAIN_QUERY, "ipc": "A01G"},
     },
     "year": {
-        "summary": "Фильтр по году с 2022: DEMO-003",
-        "value": {"query": EXAMPLE_QUERIES["main"], "year_from": 2022},
+        "summary": "Фильтр по году: с 2015",
+        "value": {"query": MAIN_QUERY, "year_from": 2015},
     },
     "no_match": {
-        "summary": "Ничего не найдено: пустая выдача",
-        "value": {"query": EXAMPLE_QUERIES["no_match"]},
+        "summary": "Фильтр МПК B65D — в корпусе таких нет: пустая выдача",
+        "value": {"query": MAIN_QUERY, "ipc": "B65D"},
     },
     "too_short": {
         "summary": "Слишком короткий запрос: ответ 422",
-        "value": {"query": EXAMPLE_QUERIES["too_short"]},
+        "value": {"query": "Умный полив"},
     },
 }
+
+
+@asynccontextmanager
+async def lifespan(application: FastAPI) -> AsyncIterator[None]:
+    """При старте: корпус, индекс BM25 и клиент LLM (SearchPipeline.from_corpus)."""
+    application.state.pipeline = SearchPipeline.from_corpus()
+    yield
+
 
 app = FastAPI(
     title="Патентный радар API",
     version=__version__,
     description=(
-        "Поиск похожих патентов РФ по описанию идеи изобретения. "
-        "КТ1: POST /search возвращает заглушку на демонстрационных данных, "
-        "поиск BM25 и языковая модель не вызываются. "
-        "Это первичный поиск аналогов, а не юридическое заключение."
+        "Поиск похожих патентов РФ по описанию идеи изобретения: собственный BM25 по "
+        "корпусу рефератов, пояснение первых 5 результатов — локальная языковая модель "
+        "через Ollama. Это первичный поиск аналогов, а не юридическое заключение."
     ),
+    lifespan=lifespan,
 )
+
+
+def get_pipeline(request: Request) -> SearchPipeline:
+    """Конвейер поиска, собранный при старте; тесты подменяют его через dependency_overrides."""
+    pipeline: SearchPipeline = request.app.state.pipeline
+    return pipeline
 
 
 @app.exception_handler(RequestValidationError)
@@ -101,12 +129,14 @@ def health() -> HealthResponse:
 )
 def search(
     request: Annotated[SearchRequest, Body(openapi_examples=SEARCH_EXAMPLES)],
+    pipeline: Annotated[SearchPipeline, Depends(get_pipeline)],
 ) -> SearchResponse:
     """Находит патенты, похожие на описание идеи, и поясняет сходства и отличия.
 
-    КТ1: ответ заглушки (app/api/stub.py). Некорректный запрос — ответ 422.
+    Некорректный запрос — ответ 422. Недоступность языковой модели — не ошибка:
+    ответ 200 с выдачей и answer «Пояснение недоступно…».
     """
-    return search_stub(request)
+    return pipeline.search(request)
 
 
 def _json_safe(value: Any) -> Any:

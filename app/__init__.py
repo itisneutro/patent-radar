@@ -6,12 +6,12 @@
 заключение.
 
 Пакеты:
-    app.api    — HTTP API на FastAPI (Коля);
+    app.api    — HTTP API на FastAPI и конвейер POST /search (Коля);
     app.llm    — клиент LLM (Коля) и промпты (Бобур);
     app.search — предобработка, инвертированный индекс и BM25 (Бобур).
 
-На КТ1 поиск и вызов LLM — заглушки; архитектура и контракт API описаны
-в spec/tech/architecture.md.
+Архитектура и контракт API — spec/tech/architecture.md, поиск и эксперименты —
+spec/tech/rag.md.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

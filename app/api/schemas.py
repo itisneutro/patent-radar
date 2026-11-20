@@ -34,8 +34,8 @@ QUERY_TOO_LONG_MESSAGE: Final = (
 )
 YEAR_RANGE_MESSAGE: Final = "Начальный год не может быть больше конечного."
 
-#: Режим поиска в ответе /health: "stub" — заглушка КТ1, "bm25" — настоящий поиск (КТ2).
-SearchMode = Literal["stub", "bm25"]
+#: Режим поиска в ответе /health: "bm25" — поиск по корпусу (с КТ2; на КТ1 был "stub").
+SearchMode = Literal["bm25"]
 
 
 def count_words(text: str) -> int:
@@ -169,5 +169,5 @@ class HealthResponse(BaseModel):
     status: Literal["ok"] = Field(description="Сервис запущен и отвечает.")
     version: str = Field(description="Версия приложения (app.__version__).")
     mode: SearchMode = Field(
-        description="Режим поиска: stub — заглушка КТ1, bm25 — поиск по корпусу (с КТ2).",
+        description="Режим поиска: bm25 — собственный BM25 по корпусу рефератов.",
     )

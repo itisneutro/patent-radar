@@ -1,4 +1,4 @@
-"""Клиент языковой модели через OpenAI-совместимый API (заготовка КТ1).
+"""Клиент языковой модели через OpenAI-совместимый API.
 
 Один клиент работает с любым сервером, который реализует OpenAI-совместимый
 API: Ollama, LM Studio, llama.cpp server, vLLM. Провайдер и параметры задаются
@@ -6,18 +6,19 @@ API: Ollama, LM Studio, llama.cpp server, vLLM. Провайдер и парам
 
     LLM_PROVIDER         ollama | openai_compatible | stub; по умолчанию ollama
     LLM_BASE_URL         адрес API; для ollama по умолчанию http://localhost:11434/v1
-    LLM_MODEL            имя модели; по умолчанию qwen2.5:7b
+    LLM_MODEL            имя модели; по умолчанию patent-radar:7b — qwen2.5:7b с окном
+                         контекста 8192, создаётся из Modelfile в корне репозитория
     LLM_API_KEY          ключ для заголовка Authorization; для ollama по умолчанию ollama
     LLM_TEMPERATURE      температура генерации от 0 до 2; по умолчанию 0.2
-    LLM_TIMEOUT_SECONDS  таймаут ответа в секундах; по умолчанию 60
+    LLM_TIMEOUT_SECONDS  таймаут ответа в секундах; по умолчанию 120
 
 Запрос к модели: POST {LLM_BASE_URL}/chat/completions с полями model, messages,
 temperature и stream=false, заголовок Authorization: Bearer {LLM_API_KEY}.
 Проверка доступности: GET {LLM_BASE_URL}/models.
 
-На КТ1 эндпоинт /search этот клиент не вызывает. На КТ2 API передаст в chat()
-сообщения из app/llm/prompts.py, а при LLMError вернёт выдачу без пояснения
-модели: ошибка LLM не превращается в ответ 5xx.
+POST /search (app/api/pipeline.py) передаёт в complete() сообщения из
+app/llm/prompts.py, а при LLMError возвращает выдачу без пояснения модели:
+ошибка LLM не превращается в ответ 5xx (spec/tech/architecture.md, раздел 8).
 
 Пример:
 
@@ -42,11 +43,15 @@ PROVIDERS: Final[tuple[str, ...]] = get_args(Provider)
 DEFAULT_PROVIDER: Final[Provider] = "ollama"
 OLLAMA_BASE_URL: Final = "http://localhost:11434/v1"
 OLLAMA_API_KEY: Final = "ollama"
-DEFAULT_MODEL: Final = "qwen2.5:7b"
+#: Модель проекта: qwen2.5:7b с окном контекста 8192 (Modelfile в корне репозитория,
+#: spec/tech/architecture.md, раздел 6). Создаётся командой ollama create.
+DEFAULT_MODEL: Final = "patent-radar:7b"
 DEFAULT_TEMPERATURE: Final = 0.2
-DEFAULT_TIMEOUT_SECONDS: Final = 60.0
+#: qwen2.5:7b отвечает на промпт /search за 13–22 с на Apple M5 (architecture.md, раздел 6);
+#: 120 с — запас для ноутбуков медленнее.
+DEFAULT_TIMEOUT_SECONDS: Final = 120.0
 
-#: Таймаут проверки доступности: /models отвечает быстро, ждать 60 с незачем.
+#: Таймаут проверки доступности: /models отвечает быстро, ждать полный таймаут незачем.
 AVAILABILITY_TIMEOUT_SECONDS: Final = 5.0
 
 #: Фиксированный ответ провайдера stub.
@@ -55,6 +60,24 @@ STUB_REPLY: Final = "Пояснение-заглушка (LLM_PROVIDER=stub): я
 
 class LLMError(Exception):
     """Языковая модель недоступна или ответила не по формату OpenAI-совместимого API."""
+
+
+@dataclass(frozen=True, slots=True)
+class LLMReply:
+    """Ответ модели: текст и сведения из ответа сервера.
+
+    Attributes:
+        text: текст ответа без пробелов по краям.
+        prompt_tokens, completion_tokens: usage.prompt_tokens и usage.completion_tokens
+            из ответа сервера; None, если сервер их не прислал.
+        finish_reason: choices[0].finish_reason: "stop" — модель закончила сама,
+            "length" — ответ оборван по длине; None, если сервер его не прислал.
+    """
+
+    text: str
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    finish_reason: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -151,7 +174,7 @@ class LLMClient:
         return cls(LLMSettings.from_env())
 
     def chat(self, messages: Sequence[Mapping[str, str]]) -> str:
-        """Отправляет сообщения модели и возвращает текст её ответа.
+        """Отправляет сообщения модели и возвращает текст её ответа (complete().text).
 
         Args:
             messages: сообщения в формате OpenAI, например
@@ -164,10 +187,22 @@ class LLMClient:
             ValueError: пустой список сообщений.
             LLMError: сервер недоступен, истёк таймаут, HTTP-ошибка или ответ не по формату.
         """
+        return self.complete(messages).text
+
+    def complete(self, messages: Sequence[Mapping[str, str]]) -> LLMReply:
+        """Как chat(), но вместе с текстом возвращает usage и finish_reason из ответа сервера.
+
+        По usage.prompt_tokens API проверяет, что сервер не обрезал промпт
+        (app/api/pipeline.py). Для провайдера stub — LLMReply(STUB_REPLY, finish_reason="stop").
+
+        Raises:
+            ValueError: пустой список сообщений.
+            LLMError: как у chat().
+        """
         if not messages:
             raise ValueError("Нужно хотя бы одно сообщение для модели")
         if self.settings.provider == "stub":
-            return STUB_REPLY
+            return LLMReply(STUB_REPLY, finish_reason="stop")
         payload = {
             "model": self.settings.model,
             "messages": [dict(message) for message in messages],
@@ -177,7 +212,12 @@ class LLMClient:
         data = self._request(
             "POST", "/chat/completions", self.settings.timeout_seconds, payload=payload
         )
-        return _extract_reply(data)
+        return LLMReply(
+            text=_extract_reply(data),
+            prompt_tokens=_usage_count(data, "prompt_tokens"),
+            completion_tokens=_usage_count(data, "completion_tokens"),
+            finish_reason=_finish_reason(data),
+        )
 
     def is_available(self) -> bool:
         """Проверяет, отвечает ли сервер LLM: GET {base_url}/models с коротким таймаутом.
@@ -254,6 +294,24 @@ def _read_number(env: Mapping[str, str | None], name: str, default: float) -> fl
     if not math.isfinite(value):
         raise ValueError(f"Значение {name} должно быть конечным числом, получено {raw!r}")
     return value
+
+
+def _usage_count(data: Any, name: str) -> int | None:
+    """Число токенов из usage ответа; None, если поля нет или оно не целое неотрицательное."""
+    usage = data.get("usage") if isinstance(data, dict) else None
+    value = usage.get(name) if isinstance(usage, dict) else None
+    if isinstance(value, int) and not isinstance(value, bool) and value >= 0:
+        return value
+    return None
+
+
+def _finish_reason(data: Any) -> str | None:
+    """choices[0].finish_reason из ответа; None, если его нет."""
+    try:
+        reason = data["choices"][0].get("finish_reason")
+    except (KeyError, IndexError, TypeError, AttributeError):
+        return None
+    return reason if isinstance(reason, str) else None
 
 
 def _extract_reply(data: Any) -> str:
