@@ -78,14 +78,16 @@
 pytest
 python benchmark/experiments.py
 marimo edit benchmark/experiments.py
+python benchmark/evaluate_answers.py
 cd frontend && npm run build
 ```
 
 - `pytest` — тесты; запускать перед каждым коммитом с кодом.
 - `python benchmark/experiments.py` — тетрадка benchmark как обычный скрипт; `marimo edit …` — та же тетрадка интерактивно, в браузере.
+- `python benchmark/evaluate_answers.py` — прогон ответов модели по benchmark через конвейер `POST /search`: Correct Rejection Rate и Accuracy по ручной разметке `benchmark/results/answers_review.md`. Ему нужна Ollama с моделью `patent-radar:7b` (раздел «Запуск» в `README.md`), около 10 минут; ключ `--score` считает метрики по сохранённому прогону без модели.
 - `npm run build` в `frontend/` — при изменениях во `frontend/`: сборка и проверка типов.
 - Тесты не требуют сети и Ollama: LLM в тестах заменяется провайдером `stub` или `httpx.MockTransport`. Новые тесты пишутся так же.
-- На КТ1 тетрадка только проверяет формат benchmark (`benchmark/queries.example.jsonl`) и показывает план экспериментов. Метрики Recall@5, Recall@10 и MRR появятся после реализации BM25.
+- Тетрадка считает Recall@5, Recall@10 и MRR по `benchmark/queries.jsonl` и сверяет выбранную конфигурацию с `app/search/config.py`; результаты — `spec/tech/rag.md`, раздел 13.
 - После реализации BM25 изменения в `app/search/`, `data/` и `benchmark/` не должны ухудшать метрики без объяснения. Главная метрика — Recall@5 (см. `spec/tech/rag.md`). Значения до и после записываются в `CHANGE_HISTORY.md`, смена выбранной конфигурации — в `spec/tech/rag.md`.
 - Если тест падает, сначала выяснить, что неверно — код или спецификация. Ожидаемые значения в тестах под код не подгоняются.
 
@@ -108,7 +110,7 @@ cd frontend && npm run build
 
 - Не выполнять `git commit`, `git push` и операции, переписывающие историю (`git rebase`, `git reset --hard`, `git push --force`), без явной просьбы человека.
 - Не реализовывать то, что на текущем этапе намеренно оставлено заготовкой (на КТ1 это были поиск в `app/search/` и вызов LLM из `POST /search`; с КТ2 они реализованы), если об этом прямо не попросили.
-- Не выдумывать номера патентов, рефераты, метрики и результаты экспериментов. Цифры качества берутся только из прогона тетрадки benchmark.
+- Не выдумывать номера патентов, рефераты, метрики и результаты экспериментов. Цифры качества берутся только из прогонов benchmark: `benchmark/experiments.py` и `benchmark/evaluate_answers.py`.
 - Документы, комментарии и докстринги — на русском; имена в коде — на английском. Ссылки на файлы — относительные пути от корня репозитория.
 - В конце работы сообщить человеку: что изменено, какие проверки запущены и с каким результатом, что не проверено и почему.
 
