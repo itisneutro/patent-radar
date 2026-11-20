@@ -1,0 +1,345 @@
+{"query": "Q-001", "doc": "RU2098946C1", "runs": ["A3", "A4", "A5"], "relevant": false}
+{"query": "Q-001", "doc": "RU2206510C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-001", "doc": "RU2249664C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-001", "doc": "RU2250424C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-001", "doc": "RU2279410C1", "runs": ["A3", "A4", "A5"], "relevant": false}
+{"query": "Q-001", "doc": "RU2282597C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-001", "doc": "RU2294899C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-001", "doc": "RU2313742C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-001", "doc": "RU2426696C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-001", "doc": "RU2455408C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-001", "doc": "RU2467108C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-001", "doc": "RU2488106C2", "runs": ["A3", "A4", "A5"], "relevant": false}
+{"query": "Q-001", "doc": "RU2501897C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-001", "doc": "RU2512675C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-001", "doc": "RU2620241C1", "runs": ["A1", "A2", "A4", "A5"], "relevant": false}
+{"query": "Q-001", "doc": "RU2667743C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-001", "doc": "RU2692468C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-001", "doc": "RU2694356C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-001", "doc": "RU2706613C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-001", "doc": "RU2787891C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-001", "doc": "RU2803265C2", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-001", "doc": "RU2823962C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-001", "doc": "RU2826358C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-001", "doc": "RU2865007C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-002", "doc": "RU2079138C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-002", "doc": "RU2116426C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-002", "doc": "RU2299864C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-002", "doc": "RU2327986C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-002", "doc": "RU2544128C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-002", "doc": "RU2567733C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-002", "doc": "RU2593013C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-002", "doc": "RU2596938C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-002", "doc": "RU2636955C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-002", "doc": "RU2667743C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-002", "doc": "RU2697805C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-002", "doc": "RU2708215C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-002", "doc": "RU2757589C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-002", "doc": "RU2765177C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-003", "doc": "RU2224420C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-003", "doc": "RU2250424C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-003", "doc": "RU2270407C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-003", "doc": "RU2424413C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-003", "doc": "RU2433240C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-003", "doc": "RU2496935C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-003", "doc": "RU2585718C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-003", "doc": "RU2636955C2", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-003", "doc": "RU2706613C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-003", "doc": "RU2717392C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-003", "doc": "RU2776122C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-003", "doc": "RU2826358C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-003", "doc": "RU2860347C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-004", "doc": "RU2048066C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-004", "doc": "RU2059508C1", "runs": ["A3", "A4", "A5"], "relevant": false}
+{"query": "Q-004", "doc": "RU2140372C1", "runs": ["A3", "A4", "A5"], "relevant": false}
+{"query": "Q-004", "doc": "RU2259300C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-004", "doc": "RU2415213C2", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-004", "doc": "RU2455408C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-004", "doc": "RU2470873C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-004", "doc": "RU2472883C2", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-004", "doc": "RU2495971C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-004", "doc": "RU2573815C2", "runs": ["A3", "A4", "A5"], "relevant": false}
+{"query": "Q-004", "doc": "RU2577495C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-004", "doc": "RU2585480C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-004", "doc": "RU2642040C2", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-004", "doc": "RU2653482C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-004", "doc": "RU2796845C1", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-004", "doc": "RU2808800C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-004", "doc": "RU2817939C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-004", "doc": "RU2856482C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-005", "doc": "RU2087367C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-005", "doc": "RU2140372C1", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-005", "doc": "RU2164877C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-005", "doc": "RU2259300C1", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-005", "doc": "RU2453643C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-005", "doc": "RU2454521C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-005", "doc": "RU2455408C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-005", "doc": "RU2494910C1", "runs": ["A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-005", "doc": "RU2500848C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-005", "doc": "RU2532002C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-005", "doc": "RU2563213C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-005", "doc": "RU2585718C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-005", "doc": "RU2620241C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-005", "doc": "RU2654259C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-005", "doc": "RU2753257C1", "runs": ["A2"], "relevant": true, "note": "одноколёсное средство передвижения с блоком управления и сервомеханизмом — то же назначение, что моноколесо; в группу B62K-2 добавлен после разметки"}
+{"query": "Q-005", "doc": "RU2757985C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-005", "doc": "RU2772899C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-005", "doc": "RU2783608C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-005", "doc": "RU2823962C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-005", "doc": "RU2840851C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-006", "doc": "RU2058244C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-006", "doc": "RU2140372C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-006", "doc": "RU2164877C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-006", "doc": "RU2241628C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-006", "doc": "RU2249664C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-006", "doc": "RU2437796C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-006", "doc": "RU2494910C1", "runs": ["A1", "A2", "A4", "A5"], "relevant": false}
+{"query": "Q-006", "doc": "RU2653482C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-006", "doc": "RU2669504C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-006", "doc": "RU2683357C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-006", "doc": "RU2694356C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-006", "doc": "RU2694537C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-006", "doc": "RU2734436C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-006", "doc": "RU2783608C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-007", "doc": "RU2112974C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-007", "doc": "RU2116426C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-007", "doc": "RU2151493C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-007", "doc": "RU2266539C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-007", "doc": "RU2282597C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-007", "doc": "RU2455408C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-007", "doc": "RU2553880C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-007", "doc": "RU2598087C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-007", "doc": "RU2632961C2", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-007", "doc": "RU2636955C2", "runs": ["A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-007", "doc": "RU2654259C2", "runs": ["A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-007", "doc": "RU2734436C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-007", "doc": "RU2778280C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-008", "doc": "RU2079138C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-008", "doc": "RU2206510C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-008", "doc": "RU2279410C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-008", "doc": "RU2313742C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-008", "doc": "RU2426696C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-008", "doc": "RU2440303C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-008", "doc": "RU2448909C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-008", "doc": "RU2549096C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-008", "doc": "RU2553880C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-008", "doc": "RU2598087C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-008", "doc": "RU2655287C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-008", "doc": "RU2697805C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-008", "doc": "RU2708215C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-008", "doc": "RU2817939C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-009", "doc": "RU2206510C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-009", "doc": "RU2313742C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-009", "doc": "RU2433240C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-009", "doc": "RU2440303C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-009", "doc": "RU2455408C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-009", "doc": "RU2504721C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-009", "doc": "RU2553880C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-009", "doc": "RU2636955C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-009", "doc": "RU2639066C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-009", "doc": "RU2744069C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-009", "doc": "RU2783608C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-009", "doc": "RU2867862C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-010", "doc": "RU2206510C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-010", "doc": "RU2225364C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-010", "doc": "RU2279410C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-010", "doc": "RU2496935C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-010", "doc": "RU2549096C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-010", "doc": "RU2573815C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": true, "note": "паровое устройство для глажения: утюг с отверстиями для пара в подошве; в группу D06F-1 добавлен после разметки"}
+{"query": "Q-010", "doc": "RU2577495C2", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-010", "doc": "RU2792336C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-011", "doc": "RU2048066C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-011", "doc": "RU2249664C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-011", "doc": "RU2376536C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-011", "doc": "RU2459896C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-011", "doc": "RU2467108C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-011", "doc": "RU2585480C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-011", "doc": "RU2585718C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-011", "doc": "RU2596938C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-011", "doc": "RU2694537C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-011", "doc": "RU2706613C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-011", "doc": "RU2734436C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-011", "doc": "RU2781563C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-012", "doc": "RU2048066C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-012", "doc": "RU2361203C1", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-012", "doc": "RU2415213C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-012", "doc": "RU2459896C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-012", "doc": "RU2470873C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-012", "doc": "RU2577495C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-012", "doc": "RU2717392C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-012", "doc": "RU2734436C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-013", "doc": "RU2025722C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-013", "doc": "RU2058244C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-013", "doc": "RU2116426C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-013", "doc": "RU2118439C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-013", "doc": "RU2241628C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-013", "doc": "RU2249664C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-013", "doc": "RU2261317C2", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-013", "doc": "RU2376536C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-013", "doc": "RU2454521C2", "runs": ["A4"], "relevant": false}
+{"query": "Q-013", "doc": "RU2470873C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-013", "doc": "RU2585480C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-013", "doc": "RU2636955C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-013", "doc": "RU2653482C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-013", "doc": "RU2775713C1", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-013", "doc": "RU2808800C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-013", "doc": "RU2832810C1", "runs": ["A5"], "relevant": false}
+{"query": "Q-013", "doc": "RU2840851C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-014", "doc": "RU2261317C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-014", "doc": "RU2278337C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-014", "doc": "RU2454521C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-014", "doc": "RU2583002C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-014", "doc": "RU2585480C2", "runs": ["A1", "A2", "A4", "A5"], "relevant": false}
+{"query": "Q-014", "doc": "RU2636955C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-014", "doc": "RU2708215C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-014", "doc": "RU2734436C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-014", "doc": "RU2775713C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-014", "doc": "RU2792336C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-014", "doc": "RU2808800C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-014", "doc": "RU2823962C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-014", "doc": "RU2826358C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-014", "doc": "RU2840851C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-015", "doc": "RU2426959C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-015", "doc": "RU2454521C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-015", "doc": "RU2455408C2", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-015", "doc": "RU2585554C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-015", "doc": "RU2697805C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-015", "doc": "RU2708215C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-015", "doc": "RU2734436C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-016", "doc": "RU2132521C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-016", "doc": "RU2249664C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-016", "doc": "RU2294899C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-016", "doc": "RU2376536C2", "runs": ["A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-016", "doc": "RU2566988C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-016", "doc": "RU2585480C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-016", "doc": "RU2598087C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-016", "doc": "RU2706613C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-016", "doc": "RU2734436C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-016", "doc": "RU2817601C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-016", "doc": "RU2817939C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-017", "doc": "RU2218527C1", "runs": ["A3", "A4", "A5"], "relevant": false}
+{"query": "Q-017", "doc": "RU2249664C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-017", "doc": "RU2250424C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-017", "doc": "RU2479704C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-017", "doc": "RU2488106C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-017", "doc": "RU2512675C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-017", "doc": "RU2601485C2", "runs": ["A3", "A4", "A5"], "relevant": false}
+{"query": "Q-017", "doc": "RU2636955C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-017", "doc": "RU2642040C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-017", "doc": "RU2654259C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-017", "doc": "RU2694537C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-017", "doc": "RU2696965C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-017", "doc": "RU2697805C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-017", "doc": "RU2706613C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-017", "doc": "RU2708215C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-017", "doc": "RU2723930C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-017", "doc": "RU2734436C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-017", "doc": "RU2815864C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-017", "doc": "RU2817939C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-017", "doc": "RU2823962C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-017", "doc": "RU2860347C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-018", "doc": "RU2037248C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-018", "doc": "RU2112974C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-018", "doc": "RU2231722C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-018", "doc": "RU2250424C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-018", "doc": "RU2268346C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-018", "doc": "RU2278337C2", "runs": ["A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-018", "doc": "RU2299864C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-018", "doc": "RU2426959C2", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-018", "doc": "RU2472080C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-018", "doc": "RU2549096C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-018", "doc": "RU2623242C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-018", "doc": "RU2630431C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-018", "doc": "RU2646004C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-018", "doc": "RU2708215C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-018", "doc": "RU2776122C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-018", "doc": "RU2817601C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-019", "doc": "RU2032129C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-019", "doc": "RU2132521C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-019", "doc": "RU2166157C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-019", "doc": "RU2185327C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-019", "doc": "RU2193773C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-019", "doc": "RU2249664C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-019", "doc": "RU2282597C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-019", "doc": "RU2361203C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-019", "doc": "RU2454521C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-019", "doc": "RU2495971C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-019", "doc": "RU2598087C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-019", "doc": "RU2616396C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-019", "doc": "RU2697805C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-019", "doc": "RU2706613C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-019", "doc": "RU2765177C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-019", "doc": "RU2775713C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-019", "doc": "RU2792336C1", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-020", "doc": "RU2032129C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-020", "doc": "RU2282597C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-020", "doc": "RU2313742C2", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-020", "doc": "RU2426696C2", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-020", "doc": "RU2440303C2", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-020", "doc": "RU2455408C2", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-020", "doc": "RU2553880C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-020", "doc": "RU2555151C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-020", "doc": "RU2598087C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-020", "doc": "RU2630431C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-020", "doc": "RU2697805C1", "runs": ["A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-020", "doc": "RU2765177C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-020", "doc": "RU2772899C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-020", "doc": "RU2783608C1", "runs": ["A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-020", "doc": "RU2826358C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-021", "doc": "RU2035109C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-021", "doc": "RU2185578C2", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-021", "doc": "RU2218527C1", "runs": ["A3", "A4", "A5"], "relevant": false}
+{"query": "Q-021", "doc": "RU2376436C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-021", "doc": "RU2454521C2", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-021", "doc": "RU2488106C2", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-021", "doc": "RU2494910C1", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-021", "doc": "RU2636955C2", "runs": ["A1", "A2", "A3"], "relevant": false}
+{"query": "Q-021", "doc": "RU2644519C1", "runs": ["A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-021", "doc": "RU2694537C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-021", "doc": "RU2734436C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-021", "doc": "RU2761936C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-021", "doc": "RU2817939C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-021", "doc": "RU2860347C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-021", "doc": "RU2867862C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-021", "doc": "RU2870885C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-022", "doc": "RU2249664C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-022", "doc": "RU2470873C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-022", "doc": "RU2530488C2", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-022", "doc": "RU2667743C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-022", "doc": "RU2692085C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-022", "doc": "RU2706613C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-022", "doc": "RU2708215C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-022", "doc": "RU2817939C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-022", "doc": "RU2867862C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-022", "doc": "RU2870885C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-023", "doc": "RU2118439C1", "runs": ["A1"], "relevant": false}
+{"query": "Q-023", "doc": "RU2185327C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-023", "doc": "RU2206510C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-023", "doc": "RU2249664C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-023", "doc": "RU2261317C2", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-023", "doc": "RU2376436C1", "runs": ["A4", "A5"], "relevant": false}
+{"query": "Q-023", "doc": "RU2459896C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-023", "doc": "RU2495971C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-023", "doc": "RU2577495C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-023", "doc": "RU2636955C2", "runs": ["A2"], "relevant": false}
+{"query": "Q-023", "doc": "RU2683357C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-023", "doc": "RU2706613C1", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-023", "doc": "RU2734436C2", "runs": ["A1", "A2"], "relevant": false}
+{"query": "Q-023", "doc": "RU2740103C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-023", "doc": "RU2767265C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-023", "doc": "RU2772899C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-023", "doc": "RU2792218C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-024", "doc": "RU2249664C2", "runs": ["A1"], "relevant": false}
+{"query": "Q-024", "doc": "RU2250424C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-024", "doc": "RU2426959C2", "runs": ["A1", "A3"], "relevant": false}
+{"query": "Q-024", "doc": "RU2475921C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-024", "doc": "RU2501897C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-024", "doc": "RU2632961C2", "runs": ["A3"], "relevant": false}
+{"query": "Q-024", "doc": "RU2636955C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-024", "doc": "RU2654259C2", "runs": ["A1", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-024", "doc": "RU2692850C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-024", "doc": "RU2698307C1", "runs": ["A3"], "relevant": false}
+{"query": "Q-024", "doc": "RU2698694C1", "runs": ["A2"], "relevant": false}
+{"query": "Q-024", "doc": "RU2734436C2", "runs": ["A1", "A2", "A3", "A4", "A5"], "relevant": false}
+{"query": "Q-024", "doc": "RU2792218C1", "runs": ["A2", "A4", "A5"], "relevant": false}
+{"query": "Q-024", "doc": "RU2856482C1", "runs": ["A3"], "relevant": false}

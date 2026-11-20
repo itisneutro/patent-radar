@@ -12,7 +12,7 @@ app.search.preprocess, с той же PreprocessConfig, что и для зап�
 при старте API из data/corpus/patents.jsonl (сотни документов — доли секунды);
 сохранение в JSON — опционально.
 
-Статус КТ1: заготовка. Методы бросают NotImplementedError, реализация — на КТ2.
+Статус КТ2: реализовано; примеры в докстрингах — doctest-проверки (tests/test_search.py).
 
 Ограничения методички: только собственная реализация; готовые поисковые индексы
 (Whoosh, Elasticsearch и т. п.) не используются.
@@ -20,8 +20,10 @@ app.search.preprocess, с той же PreprocessConfig, что и для зап�
 
 from __future__ import annotations
 
+import json
 from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
+from types import MappingProxyType
 
 DocId = str
 """Идентификатор документа: "RU<номер><код вида>" или "DEMO-001"."""
@@ -36,7 +38,7 @@ Postings = dict[DocId, int]
 class InvertedIndex:
     """Инвертированный индекс term -> {doc_id: tf} с длинами документов.
 
-    Планируемые поля (КТ2):
+    Поля:
         _postings: term -> {doc_id: tf};
         _doc_lengths: doc_id -> |D|;
         _total_length: сумма длин документов (для avgdl).
@@ -55,7 +57,9 @@ class InvertedIndex:
 
     def __init__(self) -> None:
         """Создаёт пустой индекс; документы добавляются через add_document или build."""
-        raise NotImplementedError("КТ2: InvertedIndex.__init__ — пустые postings и doc_lengths")
+        self._postings = {}
+        self._doc_lengths = {}
+        self._total_length = 0
 
     @classmethod
     def build(cls, documents: Iterable[tuple[DocId, Sequence[Term]]]) -> InvertedIndex:
@@ -75,7 +79,10 @@ class InvertedIndex:
             >>> InvertedIndex.build([("D1", ["полив"]), ("D2", ["почва"])]).n_docs
             2
         """
-        raise NotImplementedError("КТ2: InvertedIndex.build — add_document для каждого документа")
+        index = cls()
+        for doc_id, tokens in documents:
+            index.add_document(doc_id, tokens)
+        return index
 
     def add_document(self, doc_id: DocId, tokens: Sequence[Term]) -> None:
         """Добавляет документ: обновляет postings, длину документа и сумму длин.
@@ -96,7 +103,13 @@ class InvertedIndex:
             >>> index.postings("полив")["D1"], index.doc_length("D1")
             (2, 3)
         """
-        raise NotImplementedError("КТ2: InvertedIndex.add_document")
+        if doc_id in self._doc_lengths:
+            raise ValueError(f"документ {doc_id!r} уже есть в индексе")
+        for term in tokens:
+            postings = self._postings.setdefault(term, {})
+            postings[doc_id] = postings.get(doc_id, 0) + 1
+        self._doc_lengths[doc_id] = len(tokens)
+        self._total_length += len(tokens)
 
     def postings(self, term: Term) -> Mapping[DocId, int]:
         """Возвращает вхождения термина: {doc_id: tf}.
@@ -111,7 +124,7 @@ class InvertedIndex:
             >>> dict(InvertedIndex.build([("D1", ["полив", "полив"])]).postings("полив"))
             {'D1': 2}
         """
-        raise NotImplementedError("КТ2: InvertedIndex.postings")
+        return MappingProxyType(self._postings.get(term, {}))
 
     def doc_freq(self, term: Term) -> int:
         """df(t) — число документов, в которых есть термин (n_t в формуле IDF).
@@ -126,7 +139,7 @@ class InvertedIndex:
             >>> InvertedIndex.build([("D1", ["почва"]), ("D2", ["почва", "почва"])]).doc_freq("почва")
             2
         """
-        raise NotImplementedError("КТ2: InvertedIndex.doc_freq")
+        return len(self._postings.get(term, ()))
 
     def doc_length(self, doc_id: DocId) -> int:
         """|D| — длина документа в токенах после предобработки.
@@ -144,7 +157,7 @@ class InvertedIndex:
             >>> InvertedIndex.build([("D1", ["полив", "почва", "полив"])]).doc_length("D1")
             3
         """
-        raise NotImplementedError("КТ2: InvertedIndex.doc_length")
+        return self._doc_lengths[doc_id]
 
     @property
     def n_docs(self) -> int:
@@ -154,7 +167,7 @@ class InvertedIndex:
             >>> InvertedIndex.build([("D1", ["полив"]), ("D2", [])]).n_docs
             2
         """
-        raise NotImplementedError("КТ2: InvertedIndex.n_docs")
+        return len(self._doc_lengths)
 
     @property
     def avgdl(self) -> float:
@@ -164,7 +177,7 @@ class InvertedIndex:
             >>> InvertedIndex.build([("D1", ["полив", "почва", "полив"]), ("D2", ["датчик", "почва"])]).avgdl
             2.5
         """
-        raise NotImplementedError("КТ2: InvertedIndex.avgdl")
+        return self._total_length / len(self._doc_lengths) if self._doc_lengths else 0.0
 
     def save(self, path: str | Path) -> None:
         """Сохраняет индекс в JSON (UTF-8) — опционально.
@@ -179,7 +192,8 @@ class InvertedIndex:
         Example:
             Сохранение и загрузка — в примере к load.
         """
-        raise NotImplementedError("КТ2: InvertedIndex.save — JSON")
+        data = {"version": 1, "doc_lengths": self._doc_lengths, "postings": self._postings}
+        Path(path).write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
     @classmethod
     def load(cls, path: str | Path) -> InvertedIndex:
@@ -198,4 +212,11 @@ class InvertedIndex:
             >>> InvertedIndex.load(path).postings("полив")["D1"]
             1
         """
-        raise NotImplementedError("КТ2: InvertedIndex.load — JSON")
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        if data.get("version") != 1:
+            raise ValueError(f"неизвестная версия индекса: {data.get('version')!r}")
+        index = cls()
+        index._doc_lengths = {str(k): int(v) for k, v in data["doc_lengths"].items()}
+        index._postings = {t: {str(d): int(tf) for d, tf in p.items()} for t, p in data["postings"].items()}
+        index._total_length = sum(index._doc_lengths.values())
+        return index

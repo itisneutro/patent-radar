@@ -12,21 +12,35 @@ r"""Предобработка текста для BM25 — одна и та ж�
 preprocess(text, config) выполняет шаги 1–6; коды МПК добавляются в конец списка токенов.
 Токены документа индекса = preprocess(title) + preprocess(abstract).
 
-Статус КТ1: заготовка. Функции бросают NotImplementedError, реализация — на КТ2.
-Примеры в докстрингах — ожидаемый результат, сверенный с выводом pymorphy3 2.0.6
-(словарь pymorphy3-dicts-ru 2.4.417150.4580142); на КТ2 они станут doctest-проверками.
+Статус КТ2: реализовано. Примеры в докстрингах — doctest-проверки (tests/test_search.py),
+сверенные с выводом pymorphy3 2.0.6 (словарь pymorphy3-dicts-ru 2.4.417150.4580142).
 
 Ограничения методички: поиск — только собственная реализация; rank-bm25, Whoosh,
 Elasticsearch, TfidfVectorizer из scikit-learn и другие готовые поисковые индексы не
-используются. Для лемматизации разрешён pymorphy3. Он будет импортироваться лениво,
+используются. Для лемматизации разрешён pymorphy3. Он импортируется лениво,
 внутри функций, поэтому модуль импортируется без внешних зависимостей.
 """
 
 from __future__ import annotations
 
+import functools
+import re
+import unicodedata
 from collections.abc import Iterable, Sequence
 from collections.abc import Set as AbstractSet
 from dataclasses import dataclass
+
+IPC_RE = re.compile(
+    r"\b([a-hавсен])(\d{2})([a-zавсенкмортх])\s*(\d{1,4})/(\d{2,6})\b"
+    r"(?:\s*\(\d{4}\.\d{2}\))?"
+)
+"""Код МПК в тексте после normalize: раздел, класс, подкласс, группа/подгруппа, версия."""
+LOOKALIKES = str.maketrans("авсенкмортх", "abcehkmoptx")
+"""Кириллические буквы-двойники в коде МПК -> латинские."""
+WORD_RE = re.compile(r"[^\W_]+(?:-[^\W_]+)*")
+"""Слово или число; дефис внутри слова сохраняется."""
+CYRILLIC_RE = re.compile(r"[а-яё]+(?:-[а-яё]+)*")
+"""Токен из кириллических букв и дефисов — только такие токены лемматизируются."""
 
 Token = str
 """Токен после предобработки: лемма, словоформа, число или код МПК ("a01g25/16")."""
@@ -107,8 +121,6 @@ def normalize(text: str) -> str:
     в тексте, скопированном из PDF и с веб-страниц; без этого слово рвётся при
     токенизации: «беспроводной» в разложенном виде даёт токен «беспроводнои».
 
-    План реализации (КТ2): unicodedata.normalize("NFC", text).lower()
-
     Args:
         text: исходный текст — название, реферат или запрос.
 
@@ -119,7 +131,7 @@ def normalize(text: str) -> str:
         >>> normalize("Датчик влажности ПОЧВЫ")
         'датчик влажности почвы'
     """
-    raise NotImplementedError("КТ2: normalize — NFC и нижний регистр")
+    return unicodedata.normalize("NFC", text).lower()
 
 
 def extract_ipc_codes(text: str) -> tuple[list[Token], str]:
@@ -131,13 +143,8 @@ def extract_ipc_codes(text: str) -> tuple[list[Token], str]:
     латинскими; версия редакции в скобках вида «(2006.01)» отбрасывается вместе с кодом.
     Найденный код в тексте заменяется пробелом.
 
-    План реализации (КТ2):
-        IPC_RE = re.compile(
-            r"\b([a-hавсен])(\d{2})([a-zавсенкмортх])\s*(\d{1,4})/(\d{2,6})\b"
-            r"(?:\s*\(\d{4}\.\d{2}\))?"
-        )
-        LOOKALIKES = str.maketrans("авсенкмортх", "abcehkmoptx")
-        токен = (раздел + класс + подкласс).translate(LOOKALIKES) + группа + "/" + подгруппа
+    Токен = (раздел + класс + подкласс).translate(LOOKALIKES) + группа + "/" + подгруппа
+    (выражение IPC_RE — в начале модуля).
 
     Args:
         text: текст после normalize.
@@ -153,13 +160,20 @@ def extract_ipc_codes(text: str) -> tuple[list[Token], str]:
         >>> tokenize(rest)
         ['датчик', 'по', 'мпк', 'и']
     """
-    raise NotImplementedError("КТ2: extract_ipc_codes — регулярное выражение IPC_RE из докстринга")
+    codes: list[Token] = []
+
+    def replace(match: re.Match) -> str:
+        section, klass, subclass, group, subgroup = match.groups()
+        codes.append((section + klass + subclass).translate(LOOKALIKES) + group + "/" + subgroup)
+        return " "
+
+    return codes, IPC_RE.sub(replace, text)
 
 
 def tokenize(text: str) -> list[Token]:
     r"""Шаг 3: разбивает текст на слова и числа, дефис внутри слова сохраняется.
 
-    План реализации (КТ2): re.findall(r"[^\W_]+(?:-[^\W_]+)*", text)
+    Выражение: WORD_RE = re.compile(r"[^\W_]+(?:-[^\W_]+)*").
 
     [^\W_] — буква или цифра любого алфавита (\w без подчёркивания). Класс символов
     тот же, что в проверке запроса в API (не меньше 3 слов), но там дефис разделяет
@@ -177,7 +191,7 @@ def tokenize(text: str) -> list[Token]:
         >>> tokenize("покрытие кремний-органическое, связь по wi-fi — 12 часов")
         ['покрытие', 'кремний-органическое', 'связь', 'по', 'wi-fi', '12', 'часов']
     """
-    raise NotImplementedError("КТ2: tokenize — регулярное выражение слов с дефисами")
+    return WORD_RE.findall(text)
 
 
 def lemmatize(tokens: Sequence[Token]) -> list[Token]:
@@ -190,7 +204,7 @@ def lemmatize(tokens: Sequence[Token]) -> list[Token]:
     («отличающийся» -> «отличаться»). Неоднозначные случаи — spec/tech/rag.md, 4.4:
     «установленный» -> «установленный», «полив» -> «полить» (деепричастие, score 0.4).
 
-    План реализации (КТ2):
+    Реализация:
     - один pymorphy3.MorphAnalyzer() на процесс, создаётся при первом вызове
       (import pymorphy3 — внутри функции);
     - лемма одного токена кэшируется functools.lru_cache;
@@ -208,7 +222,7 @@ def lemmatize(tokens: Sequence[Token]) -> list[Token]:
         >>> lemmatize(["установленный", "установлен", "причем"])
         ['установленный', 'установить', 'причём']
     """
-    raise NotImplementedError("КТ2: lemmatize — pymorphy3 parse(token)[0].normal_form с кэшем")
+    return [_lemma(token) if CYRILLIC_RE.fullmatch(token) else token for token in tokens]
 
 
 def fold_yo(tokens: Sequence[Token]) -> list[Token]:
@@ -228,13 +242,13 @@ def fold_yo(tokens: Sequence[Token]) -> list[Token]:
         >>> fold_yo(["причём", "ёмкостный", "датчик"])
         ['причем', 'емкостный', 'датчик']
     """
-    raise NotImplementedError("КТ2: fold_yo — замена ё на е")
+    return [token.replace("ё", "е") for token in tokens]
 
 
 def expand_wordforms(lemmas: Iterable[str]) -> frozenset[str]:
     """Расширяет леммы всеми словоформами — для стоп-слов без лемматизации (опыт A3).
 
-    План реализации (КТ2): для каждой леммы берутся ВСЕ разборы
+    Для каждой леммы берутся ВСЕ разборы
     MorphAnalyzer().parse(lemma), у которых normal_form (с «ё» -> «е») совпадает с
     леммой, и объединяются их lexeme (тоже с «ё» -> «е»); сама лемма входит в результат.
     Одного parse(lemma)[0] мало: у «мочь» первый разбор — существительное («мочи»,
@@ -252,7 +266,14 @@ def expand_wordforms(lemmas: Iterable[str]) -> frozenset[str]:
         >>> sorted(f for f in forms if f in {"отличающийся", "отличается", "во", "может"})
         ['во', 'может', 'отличается', 'отличающийся']
     """
-    raise NotImplementedError("КТ2: expand_wordforms — объединение lexeme всех подходящих разборов")
+    morph = _analyzer()
+    forms: set[str] = set()
+    for lemma in lemmas:
+        forms.add(lemma)
+        for parse in morph.parse(lemma):
+            if parse.normal_form.replace("ё", "е") == lemma:
+                forms.update(form.word.replace("ё", "е") for form in parse.lexeme)
+    return frozenset(forms)
 
 
 def stopwords_for(config: PreprocessConfig) -> frozenset[str]:
@@ -276,7 +297,7 @@ def stopwords_for(config: PreprocessConfig) -> frozenset[str]:
         >>> stopwords_for(PreprocessConfig(general_stopwords=False, patent_stopwords=False))
         frozenset()
     """
-    raise NotImplementedError("КТ2: stopwords_for — леммы или словоформы по флагам config")
+    return _stopwords_for(config.lemmatize, config.general_stopwords, config.patent_stopwords)
 
 
 def remove_stopwords(tokens: Sequence[Token], stopwords: AbstractSet[str]) -> list[Token]:
@@ -293,7 +314,7 @@ def remove_stopwords(tokens: Sequence[Token], stopwords: AbstractSet[str]) -> li
         >>> remove_stopwords(["отличаться", "тем", "что", "контроллер"], stopwords_for(PreprocessConfig()))
         ['контроллер']
     """
-    raise NotImplementedError("КТ2: remove_stopwords — фильтр по множеству")
+    return [token for token in tokens if token not in stopwords]
 
 
 def preprocess(text: str, config: PreprocessConfig = PreprocessConfig()) -> list[Token]:
@@ -316,4 +337,37 @@ def preprocess(text: str, config: PreprocessConfig = PreprocessConfig()) -> list
         >>> preprocess("Датчик по МПК G01N 33/24 (2006.01)")
         ['датчик', 'мпк', 'g01n33/24']
     """
-    raise NotImplementedError("КТ2: preprocess — шаги normalize ... remove_stopwords")
+    codes, rest = extract_ipc_codes(normalize(text))
+    tokens = tokenize(rest)
+    if config.lemmatize:
+        tokens = lemmatize(tokens)
+    tokens = fold_yo(tokens)
+    tokens = remove_stopwords(tokens, stopwords_for(config))
+    return tokens + codes
+
+
+@functools.lru_cache(maxsize=1)
+def _analyzer():
+    """Один MorphAnalyzer на процесс: при создании он загружает словари."""
+    import pymorphy3
+
+    return pymorphy3.MorphAnalyzer()
+
+
+@functools.lru_cache(maxsize=200_000)
+def _lemma(token: Token) -> Token:
+    """Лемма одного токена: первый, самый вероятный разбор pymorphy3."""
+    return _analyzer().parse(token)[0].normal_form
+
+
+@functools.lru_cache(maxsize=None)
+def _stopwords_for(lemmatize: bool, general: bool, patent: bool) -> frozenset[str]:
+    """Стоп-список строится один раз на сочетание флагов."""
+    words: set[str] = set()
+    if general:
+        words |= GENERAL_STOPWORDS
+    if patent:
+        words |= PATENT_STOPWORDS
+    if not words:
+        return frozenset()
+    return frozenset(words) if lemmatize else expand_wordforms(sorted(words))

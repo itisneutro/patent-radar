@@ -11,7 +11,7 @@ t встречается в D, |D| — длина D в токенах после
 По умолчанию k1 = 1.2 (насыщение частоты термина), b = 0.75 (нормировка длины).
 Термины запроса берутся множеством: повтор слова в запросе не увеличивает score.
 
-Статус КТ1: заготовка. Методы бросают NotImplementedError, реализация — на КТ2.
+Статус КТ2: реализовано; примеры в докстрингах — doctest-проверки (tests/test_search.py).
 
 Ограничения методички: BM25 — только собственная реализация; rank-bm25, Whoosh,
 Elasticsearch, TfidfVectorizer из scikit-learn в роли поиска и любые готовые поисковые
@@ -20,6 +20,7 @@ Elasticsearch, TfidfVectorizer из scikit-learn в роли поиска и л�
 
 from __future__ import annotations
 
+import math
 from collections.abc import Sequence
 
 from .index import InvertedIndex
@@ -55,7 +56,13 @@ class BM25:
             >>> BM25(InvertedIndex.build([("D1", ["полив"])]), k1=0.9, b=0.5).k1
             0.9
         """
-        raise NotImplementedError("КТ2: BM25.__init__ — сохранить index, k1, b и проверить диапазоны")
+        if k1 < 0:
+            raise ValueError(f"k1 должен быть >= 0, получено {k1}")
+        if not 0 <= b <= 1:
+            raise ValueError(f"b должен быть в [0, 1], получено {b}")
+        self.index = index
+        self.k1 = float(k1)
+        self.b = float(b)
 
     def idf(self, term: str) -> float:
         """IDF(t) = ln(1 + (N - n_t + 0.5) / (n_t + 0.5)) — всегда больше 0.
@@ -75,7 +82,8 @@ class BM25:
             >>> round(bm25.idf("полив"), 4), round(bm25.idf("почва"), 4)
             (0.6931, 0.1823)
         """
-        raise NotImplementedError("КТ2: BM25.idf")
+        n_docs, n_t = self.index.n_docs, self.index.doc_freq(term)
+        return math.log(1 + (n_docs - n_t + 0.5) / (n_t + 0.5))
 
     def score(self, query_tokens: Sequence[str], doc_id: str) -> float:
         """score(D, Q) для одного документа (для отладки и проверки формулы).
@@ -92,7 +100,12 @@ class BM25:
             >>> round(bm25.score(["почва"], "D2"), 4), bm25.score(["датчик"], "D1")
             (0.1986, 0.0)
         """
-        raise NotImplementedError("КТ2: BM25.score")
+        total = 0.0
+        for term in set(query_tokens):
+            tf = self.index.postings(term).get(doc_id, 0)
+            if tf:
+                total += self._term_score(self.idf(term), tf, self.index.doc_length(doc_id))
+        return total
 
     def search(self, query_tokens: Sequence[str], top_k: int | None = 10) -> list[SearchResult]:
         """Ранжирует документы, в которых есть хотя бы один термин запроса.
@@ -119,4 +132,19 @@ class BM25:
             >>> bm25.search(["зонт"])
             []
         """
-        raise NotImplementedError("КТ2: BM25.search")
+        scores: dict[str, float] = {}
+        for term in set(query_tokens):
+            postings = self.index.postings(term)
+            if not postings:
+                continue
+            idf = self.idf(term)
+            for doc_id, tf in postings.items():
+                scores[doc_id] = scores.get(doc_id, 0.0) + self._term_score(idf, tf, self.index.doc_length(doc_id))
+        ranked = sorted(((d, s) for d, s in scores.items() if s > 0), key=lambda item: (-item[1], item[0]))
+        return ranked if top_k is None else ranked[:top_k]
+
+    def _term_score(self, idf: float, tf: int, doc_length: int) -> float:
+        """Вклад одного термина: IDF · tf · (k1 + 1) / (tf + k1 · (1 − b + b · |D| / avgdl))."""
+        avgdl = self.index.avgdl
+        norm = 1 - self.b + self.b * doc_length / avgdl if avgdl > 0 else 1.0
+        return idf * tf * (self.k1 + 1) / (tf + self.k1 * norm)
