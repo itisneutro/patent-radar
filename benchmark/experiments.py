@@ -78,10 +78,18 @@ def _(mo):
         BENCHMARK_DIR / "queries.jsonl",
         BENCHMARK_DIR / "queries.example.jsonl",
     )
+    # пример запросов ссылается на демо-записи, поэтому его проверяем по демо-корпусу,
+    # даже когда реальный корпус уже собран, а реальных запросов ещё нет
+    QUERY_CORPUS_PATH = (
+        REPO_ROOT / "data" / "sample" / "patents.jsonl"
+        if QUERIES_PATH.name == "queries.example.jsonl"
+        else CORPUS_PATH
+    )
     return (
         CORPUS_PATH,
         Counter,
         QUERIES_PATH,
+        QUERY_CORPUS_PATH,
         REPO_ROOT,
         defaultdict,
         hashlib,
@@ -94,7 +102,7 @@ def _(mo):
 
 
 @app.cell
-def _(CORPUS_PATH, QUERIES_PATH, REPO_ROOT, hashlib, json, mo):
+def _(CORPUS_PATH, QUERIES_PATH, QUERY_CORPUS_PATH, REPO_ROOT, hashlib, json, mo):
     def load_jsonl(path):
         """Читает JSONL в UTF-8: одна запись — одна строка, пустые строки пропускаются."""
         with path.open(encoding="utf-8") as file:
@@ -121,8 +129,13 @@ def _(CORPUS_PATH, QUERIES_PATH, REPO_ROOT, hashlib, json, mo):
     corpus = load_jsonl(CORPUS_PATH)
     queries = load_jsonl(QUERIES_PATH)
     corpus_by_id = {doc.get("id"): doc for doc in corpus}
+    query_corpus_by_id = (
+        corpus_by_id
+        if QUERY_CORPUS_PATH == CORPUS_PATH
+        else {doc.get("id"): doc for doc in load_jsonl(QUERY_CORPUS_PATH)}
+    )
     is_demo_corpus = all(str(doc.get("id", "")).startswith("DEMO-") for doc in corpus)
-    return corpus, corpus_by_id, file_fingerprint, is_demo_corpus, queries, repo_path
+    return corpus, corpus_by_id, file_fingerprint, is_demo_corpus, queries, query_corpus_by_id, repo_path
 
 
 @app.cell
@@ -145,8 +158,8 @@ def _(Counter, corpus):
 
 
 @app.cell
-def _(corpus_by_id, queries, re):
-    QUERY_FIELDS = {"id", "query", "relevant", "topic"}
+def _(queries, query_corpus_by_id, re):
+    QUERY_FIELDS = {"id", "query", "relevant", "topic", "expected"}
     MIN_RELEVANT = 3
     MIN_QUERY_WORDS = 3  # как в проверке запроса в API: слово = [^\W_]+
     MAX_QUERY_CHARS = 2000
@@ -176,12 +189,15 @@ def _(corpus_by_id, queries, re):
             problems.append("повторы в relevant")
         if len(set(relevant)) < MIN_RELEVANT:
             problems.append(f"релевантных меньше {MIN_RELEVANT}")
-        missing = [doc_id for doc_id in relevant if doc_id not in corpus_by_id]
+        missing = [doc_id for doc_id in relevant if doc_id not in query_corpus_by_id]
         if missing:
             problems.append("нет в корпусе: " + ", ".join(missing))
         topic = row.get("topic")
         if not isinstance(topic, str) or not re.fullmatch(r"[A-H]\d{2}[A-Z]", topic):
             problems.append("topic не подкласс МПК вида A01G")
+        expected = row.get("expected")
+        if not isinstance(expected, str) or not expected.strip():
+            problems.append("expected — не непустая строка (эталонный ответ, rag.md, 10.5)")
         return problems
 
 
@@ -198,7 +214,7 @@ def _(corpus_by_id, queries, re):
                 "topic": str(_row.get("topic")),
                 "слов": len(re.findall(r"[^\W_]+", _query)),
                 "релевантных": len(set(_relevant)),
-                "в корпусе": sum(doc_id in corpus_by_id for doc_id in set(_relevant)),
+                "в корпусе": sum(doc_id in query_corpus_by_id for doc_id in set(_relevant)),
                 "проверка": "OK" if not _problems else "; ".join(_problems),
             }
         )
@@ -357,9 +373,10 @@ def _(
         [
             mo.md(
                 "## 2. Проверка формата benchmark\n\n"
-                "Правила (rag.md, раздел 10): поля ровно `id`, `query`, `relevant`, `topic`; `id` вида `Q-001` и уникален; "
-                "в запросе не меньше 3 слов; не меньше 3 релевантных без повторов; все релевантные есть в корпусе; "
-                "`topic` — подкласс МПК."
+                "Правила (rag.md, раздел 10.5): поля ровно `id`, `query`, `relevant`, `topic`, `expected`; `id` вида `Q-001` и уникален; "
+                "в запросе не меньше 3 слов; не меньше 3 релевантных без повторов; все релевантные есть в корпусе "
+                "(пример `queries.example.jsonl` проверяется по демо-корпусу `data/sample/patents.jsonl`); "
+                "`topic` — подкласс МПК; `expected` — эталонный ответ, непустая строка."
             ),
             mo.md(markdown_table(format_rows, ["id", "topic", "слов", "релевантных", "в корпусе", "проверка"])),
             mo.md(
@@ -869,7 +886,8 @@ def _(
         "Патентный радар — benchmark поиска (КТ1)",
         f"Корпус: {repo_path(CORPUS_PATH)} — записей: {len(corpus)}"
         + (" (демонстрационные данные)" if is_demo_corpus else ""),
-        f"Запросы: {repo_path(QUERIES_PATH)} — запросов: {len(queries)} (dev: {len(dev_queries)}, test: {len(test_queries)}, тем: {_topics})",
+        f"Запросы: {repo_path(QUERIES_PATH)} — запросов: {len(queries)} (dev: {len(dev_queries)}, test: {len(test_queries)}, тем: {_topics})"
+        + (" — пример, проверен по демо-корпусу" if QUERIES_PATH.name == "queries.example.jsonl" else ""),
         "Формат benchmark: OK" if not format_errors else "Формат benchmark: ОШИБКИ — " + "; ".join(format_errors),
     ]
     if corpus_errors:
